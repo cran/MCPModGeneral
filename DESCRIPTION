@@ -1,6 +1,6 @@
 Package: MCPModGeneral
 Title: A Supplement to the 'DoseFinding' Package for the General Case
-Version: 0.1-0
+Version: 0.1-1
 Authors@R: 
     c(person(given = "Ian",
            family = "Laga",
@@ -18,13 +18,13 @@ Encoding: UTF-8
 LazyData: true
 Depends: DoseFinding
 Imports: stats, MASS
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: testthat (>= 2.1.0), knitr, rmarkdown, survival
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-08-28 11:20:09 UTC; GKIOK
+Packaged: 2020-02-09 21:54:23 UTC; ilaga
 Author: Ian Laga [aut, cre],
   Francis Boateng [aut]
 Maintainer: Ian Laga <ilaga25@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-08-28 12:10:02 UTC
+Date/Publication: 2020-02-19 17:50:04 UTC

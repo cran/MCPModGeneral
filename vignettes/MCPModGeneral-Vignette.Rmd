@@ -2,7 +2,7 @@
 title: "MCPModGeneral Vignette"
 author: "Ian Laga"
 date: "22 August, 2019"
-output: rmarkdown::html_vignette
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{MCPModGeneral-Vignette}
   %\VignetteEngine{knitr::rmarkdown}

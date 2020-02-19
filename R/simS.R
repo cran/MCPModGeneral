@@ -35,8 +35,6 @@
 #'   ignored otherwise.
 #' @param verbose A logical specifying whether the patient allocation should be
 #'   printed, in addition to the results.
-#' @param ... For all other arguments, see the documentation in
-#'   \code{\link[DoseFinding:powMCT]{powMCT}}.
 #' @return Numeric containing the estimated covariance matrix.
 #' @examples
 #' data(migraine)

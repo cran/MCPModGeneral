@@ -5,13 +5,31 @@
 \title{MCPModSurv - Multiple Comparison and Modeling for Coxph and Parametric
 Survival Models}
 \usage{
-MCPModSurv(model = c("coxph", "parametric"), dist = NULL,
-  returnS = FALSE, dose, resp, status, data = NULL, models,
-  placAdj = FALSE, selModel = c("AIC", "maxT", "aveAIC"),
-  alpha = 0.025, df = NULL, critV = NULL, doseType = c("TD", "ED"),
-  Delta, p, pVal = TRUE, alternative = c("one.sided", "two.sided"),
-  na.action = na.fail, mvtcontrol = mvtnorm.control(), bnds,
-  control = NULL, ...)
+MCPModSurv(
+  model = c("coxph", "parametric"),
+  dist = NULL,
+  returnS = FALSE,
+  dose,
+  resp,
+  status,
+  data = NULL,
+  models,
+  placAdj = FALSE,
+  selModel = c("AIC", "maxT", "aveAIC"),
+  alpha = 0.025,
+  df = NULL,
+  critV = NULL,
+  doseType = c("TD", "ED"),
+  Delta,
+  p,
+  pVal = TRUE,
+  alternative = c("one.sided", "two.sided"),
+  na.action = na.fail,
+  mvtcontrol = mvtnorm.control(),
+  bnds,
+  control = NULL,
+  ...
+)
 }
 \arguments{
 \item{model}{A character string containing the survival regression model.}
@@ -30,16 +48,16 @@ equal length containing their respective values. \code{status} refers to
 whether an observation was censored or not. If no observations were
 censored, \code{status} should be a vector of 1s.}
 
-\item{data}{Data frame with names specified in \code{dose}, \code{resp}, and optionally
-\code{w}. If data is not specified, it is assumed that \code{dose} and \code{resp} are
+\item{data}{Data frame with names specified in `dose`, `resp`, and optionally
+`w`. If data is not specified, it is assumed that `dose` and `resp` are
 numerical vectors}
 
 \item{models}{
-    An object of class \samp{"Mods"}, see \code{\link{Mods}} for
+    An object of class \samp{"Mods"}, see \code{\link[DoseFinding]{Mods}} for
     details
   }
 
-\item{placAdj}{Logical specifying whether the provided by \code{resp} are to be
+\item{placAdj}{Logical specifying whether the provided by `resp` are to be
 treated as placebo-adjusted estimates.}
 
 \item{selModel}{
@@ -62,7 +80,7 @@ treated as placebo-adjusted estimates.}
 }
 
 \item{df}{An optional numeric value specifying the degrees of freedom.
-Infinite degrees of freedom (\code{df=Inf}, the default), correspond to the
+Infinite degrees of freedom (`df=Inf`, the default), correspond to the
 multivariate normal distribution.}
 
 \item{critV}{
@@ -73,23 +91,23 @@ multivariate normal distribution.}
 
 \item{doseType}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link{Mods}}), and \samp{Delta} and \samp{p} need to be
+    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.
-    See \code{\link{TD}} and \code{\link{ED}} for details.
+    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
   }
 
 \item{Delta}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link{Mods}}), and \samp{Delta} and \samp{p} need to be
+    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.
-    See \code{\link{TD}} and \code{\link{ED}} for details.
+    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
   }
 
 \item{p}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link{Mods}}), and \samp{Delta} and \samp{p} need to be
+    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.
-    See \code{\link{TD}} and \code{\link{ED}} for details.
+    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
   }
 
 \item{pVal}{
@@ -108,7 +126,7 @@ multivariate normal distribution.}
 
 \item{mvtcontrol}{
   A list specifying additional control parameters for the \samp{qmvt}
-  and \samp{pmvt} calls in the code, see also \code{\link{mvtnorm.control}}
+  and \samp{pmvt} calls in the code, see also \code{\link[DoseFinding]{mvtnorm.control}}
   for details.
 }
 
@@ -116,7 +134,7 @@ multivariate normal distribution.}
   Bounds for non-linear parameters. This needs to be a list with list
   entries corresponding to the selected bounds. The names of the list
   entries need to correspond to the model names. The
-  \code{\link{defBnds}} function provides the default selection.
+  \code{\link[DoseFinding]{defBnds}} function provides the default selection.
 }
 
 \item{control}{
@@ -140,8 +158,8 @@ multivariate normal distribution.}
 }
 \value{
 An object of class MCPMod if returnS = FALSE. Otherwise, a list
-containing an object of class MCPMod, the numeric vector \eqn{\mu}, and the
-numeric matrix \eqn{S}.
+  containing an object of class MCPMod, the numeric vector \eqn{\mu}, and the
+  numeric matrix \eqn{S}.
 }
 \description{
 This function allows the user to implement the MCPMod function on a Cox
@@ -151,8 +169,8 @@ function works very similarly to
 terms of the data and the parameters to warrant its own function.
 }
 \details{
-\code{MCPModSurv} works by making calls to \code{coxph}, \code{survreg}, and \code{Surv} from the
-\code{survival} package. After retrieving coefficient estimates and the estimated
-covariance matrix, values are passed into the \code{MCPMod} function from the
-\code{DoseFinding} package.
+`MCPModSurv` works by making calls to `coxph`, `survreg`, and `Surv` from the
+`survival` package. After retrieving coefficient estimates and the estimated
+covariance matrix, values are passed into the `MCPMod` function from the
+`DoseFinding` package.
 }

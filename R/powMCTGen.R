@@ -635,9 +635,9 @@ powMCTGen <- function(nSample, family = c("negative binomial", "binomial", "pois
     dose.samples <- round(dose.samples)
   }
   if (verbose) {
-    message("the patient allocation is given by:")
+    print("the patient allocation is given by:")
     pat.df = data.frame(Dose = doses, nPatients = dose.samples)
-    message(pat.df)
+    print(pat.df)
   }
 
   family <- match.arg(family)

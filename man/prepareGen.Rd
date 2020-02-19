@@ -4,10 +4,19 @@
 \alias{prepareGen}
 \title{Prepare General Data for the MCPMod Function}
 \usage{
-prepareGen(family = c("negative binomial", "binomial", "poisson"),
-  link = c("log", "logit", "probit", "cauchit", "cloglog", "identity",
-  "log risk ratio", "risk ratio", "sqrt"), w = NULL, dose, resp,
-  data = NULL, addCovars = ~1, placAdj = FALSE, offset = NULL, ...)
+prepareGen(
+  family = c("negative binomial", "binomial", "poisson"),
+  link = c("log", "logit", "probit", "cauchit", "cloglog", "identity", "log risk ratio",
+    "risk ratio", "sqrt"),
+  w = NULL,
+  dose,
+  resp,
+  data = NULL,
+  addCovars = ~1,
+  placAdj = FALSE,
+  offset = NULL,
+  ...
+)
 }
 \arguments{
 \item{family}{A character string containing the error distribution to be used
@@ -26,13 +35,14 @@ frame specified in \code{data}.}
 values, or character vectors specifying the names of variables in the data
 frame specified in \code{data}.}
 
-\item{data}{Data frame with names specified in \code{dose}, \code{resp}, and optionally
-\code{w}. If data is not specified, it is assumed that \code{dose} and \code{resp} are
+\item{data}{Data frame with names specified in `dose`, `resp`, and optionally
+`w`. If data is not specified, it is assumed that `dose` and `resp` are
 numerical vectors}
 
-\item{addCovars}{Formula specifying additive linear covariates (e.g. \code{~ factor(gender)}).}
+\item{addCovars}{Formula specifying additive linear covariates (e.g. `~
+factor(gender)`).}
 
-\item{placAdj}{Logical specifying whether the provided by \code{resp} are to be
+\item{placAdj}{Logical specifying whether the provided by `resp` are to be
 treated as placebo-adjusted estimates.}
 
 \item{offset}{Either a numeric vector of the same length as dose and resp, or a

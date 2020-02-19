@@ -4,12 +4,24 @@
 \alias{sampSizeMCTGen}
 \title{Sample Size Calculations (General Case)}
 \usage{
-sampSizeMCTGen(family = c("negative binomial", "binomial", "poisson"),
-  link = c("log", "logit", "probit", "cauchit", "cloglog",
-  "log risk ratio", "risk ratio"), modelPar = NULL, theoResp = NULL,
-  doses = NULL, upperN, lowerN = floor(upperN/2), Ntype = c("arm",
-  "total"), alRatio = NULL, altModels, alpha = 0.025, power = 0.8,
-  sumFct = c("min", "mean", "max"), verbose = FALSE, tol = 0.001)
+sampSizeMCTGen(
+  family = c("negative binomial", "binomial", "poisson"),
+  link = c("log", "logit", "probit", "cauchit", "cloglog", "log risk ratio",
+    "risk ratio"),
+  modelPar = NULL,
+  theoResp = NULL,
+  doses = NULL,
+  upperN,
+  lowerN = floor(upperN/2),
+  Ntype = c("arm", "total"),
+  alRatio = NULL,
+  altModels,
+  alpha = 0.025,
+  power = 0.8,
+  sumFct = c("min", "mean", "max"),
+  verbose = FALSE,
+  tol = 0.001
+)
 }
 \arguments{
 \item{family}{A character string containing the error distribution to be used

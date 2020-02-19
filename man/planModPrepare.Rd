@@ -4,12 +4,21 @@
 \alias{planModPrepare}
 \title{Return the S Matrix for a Theoretical DR-Curve}
 \usage{
-planModPrepare(nSample, family = c("negative binomial", "binomial",
-  "poisson"), link = c("log", "logit", "sqrt", "probit", "cauchit",
-  "cloglog", "identity", "risk ratio", "log risk ratio"),
-  modelPar = NULL, theoResp = NULL, doses = NULL, Ntype = c("arm",
-  "total", "actual"), alRatio = NULL, placEff = NULL, models = NULL,
-  verbose = FALSE, offset = NULL)
+planModPrepare(
+  nSample,
+  family = c("negative binomial", "binomial", "poisson"),
+  link = c("log", "logit", "sqrt", "probit", "cauchit", "cloglog", "identity",
+    "risk ratio", "log risk ratio"),
+  modelPar = NULL,
+  theoResp = NULL,
+  doses = NULL,
+  Ntype = c("arm", "total", "actual"),
+  alRatio = NULL,
+  placEff = NULL,
+  models = NULL,
+  verbose = FALSE,
+  offset = NULL
+)
 }
 \arguments{
 \item{nSample}{An integer if \code{Ntype} is 'arm' or 'total', or a numerical
@@ -58,7 +67,7 @@ it is unlikely to know the individual offsets in advance.}
 }
 \value{
 A numeric S matrix, or a list S matrices, for each model is
-\code{models}.
+  \code{models}.
 }
 \description{
 This function is useful for several \code{DoseFinding} functions, but

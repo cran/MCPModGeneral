@@ -4,9 +4,19 @@
 \alias{simS}
 \title{Covariance Matrix Simulation}
 \usage{
-simS(doses, resp, nSample, Ntype = c("arm", "total", "actual"),
-  nSim = 1000, alRatio = NULL, family, link, modelPar = NULL,
-  placEff = NULL, verbose = FALSE)
+simS(
+  doses,
+  resp,
+  nSample,
+  Ntype = c("arm", "total", "actual"),
+  nSim = 1000,
+  alRatio = NULL,
+  family,
+  link,
+  modelPar = NULL,
+  placEff = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{doses}{A numerical vector of doses, corresponding to the theoretical
@@ -48,9 +58,6 @@ ignored otherwise.}
 
 \item{verbose}{A logical specifying whether the patient allocation should be
 printed, in addition to the results.}
-
-\item{...}{For all other arguments, see the documentation in
-\code{\link[DoseFinding:powMCT]{powMCT}}.}
 }
 \value{
 Numeric containing the estimated covariance matrix.

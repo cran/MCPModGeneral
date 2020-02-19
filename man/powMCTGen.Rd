@@ -4,14 +4,25 @@
 \alias{powMCTGen}
 \title{Calculate Power for Multiple Contrast Test (General Case)}
 \usage{
-powMCTGen(nSample, family = c("negative binomial", "binomial",
-  "poisson"), link = c("log", "logit", "sqrt", "probit", "cauchit",
-  "cloglog", "identity", "risk ratio", "log risk ratio"),
-  modelPar = NULL, placEff = NULL, theoResp = NULL, doses = NULL,
-  Ntype = c("arm", "total", "actual"), alRatio = NULL, altModels,
-  alpha = 0.025, df = NULL, critV = TRUE,
-  alternative = c("one.sided", "two.sided"), verbose = FALSE,
-  offset = NULL)
+powMCTGen(
+  nSample,
+  family = c("negative binomial", "binomial", "poisson"),
+  link = c("log", "logit", "sqrt", "probit", "cauchit", "cloglog", "identity",
+    "risk ratio", "log risk ratio"),
+  modelPar = NULL,
+  placEff = NULL,
+  theoResp = NULL,
+  doses = NULL,
+  Ntype = c("arm", "total", "actual"),
+  alRatio = NULL,
+  altModels,
+  alpha = 0.025,
+  df = NULL,
+  critV = TRUE,
+  alternative = c("one.sided", "two.sided"),
+  verbose = FALSE,
+  offset = NULL
+)
 }
 \arguments{
 \item{nSample}{An integer if \code{Ntype} is 'arm' or 'total', or a numerical

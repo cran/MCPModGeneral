@@ -13,8 +13,8 @@
   \tabular{ll}{
     Package: \tab MCPModGeneral\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-0 \cr
-    Date: \tab 2019-8-27\cr
+    Version: \tab 0.1-1 \cr
+    Date: \tab 2020-2-9\cr
     License: \tab GPL-3
   }
   The main functions are:\cr

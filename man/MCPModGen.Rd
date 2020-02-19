@@ -4,15 +4,34 @@
 \alias{MCPModGen}
 \title{MCPModGen - Multiple Comparison and Modeling (General Case)}
 \usage{
-MCPModGen(family = c("negative binomial", "binomial"), link = c("log",
-  "logit", "probit", "cauchit", "cloglog", "identity", "log risk ratio",
-  "risk ratio"), returnS = FALSE, w = NULL, dose, resp, data = NULL,
-  models, addCovars = ~1, placAdj = FALSE, selModel = c("AIC",
-  "maxT", "aveAIC"), alpha = 0.025, df = NULL, critV = NULL,
-  doseType = c("TD", "ED"), Delta, p, pVal = TRUE,
-  alternative = c("one.sided", "two.sided"), na.action = na.fail,
-  mvtcontrol = mvtnorm.control(), bnds, control = NULL,
-  offset = NULL, ...)
+MCPModGen(
+  family = c("negative binomial", "binomial"),
+  link = c("log", "logit", "probit", "cauchit", "cloglog", "identity", "log risk ratio",
+    "risk ratio"),
+  returnS = FALSE,
+  w = NULL,
+  dose,
+  resp,
+  data = NULL,
+  models,
+  addCovars = ~1,
+  placAdj = FALSE,
+  selModel = c("AIC", "maxT", "aveAIC"),
+  alpha = 0.025,
+  df = NULL,
+  critV = NULL,
+  doseType = c("TD", "ED"),
+  Delta,
+  p,
+  pVal = TRUE,
+  alternative = c("one.sided", "two.sided"),
+  na.action = na.fail,
+  mvtcontrol = mvtnorm.control(),
+  bnds,
+  control = NULL,
+  offset = NULL,
+  ...
+)
 }
 \arguments{
 \item{family}{A character string containing the error distribution to be used
@@ -30,18 +49,19 @@ character vector denoting the column name in the data.}
 values, or character vectors specifying the names of variables in the data
 frame specified in \code{data}.}
 
-\item{data}{Data frame with names specified in \code{dose}, \code{resp}, and optionally
-\code{w}. If data is not specified, it is assumed that \code{dose} and \code{resp} are
+\item{data}{Data frame with names specified in `dose`, `resp`, and optionally
+`w`. If data is not specified, it is assumed that `dose` and `resp` are
 numerical vectors}
 
 \item{models}{
-    An object of class \samp{"Mods"}, see \code{\link{Mods}} for
+    An object of class \samp{"Mods"}, see \code{\link[DoseFinding]{Mods}} for
     details
   }
 
-\item{addCovars}{Formula specifying additive linear covariates (e.g. \code{~ factor(gender)}).}
+\item{addCovars}{Formula specifying additive linear covariates (e.g. `~
+factor(gender)`).}
 
-\item{placAdj}{Logical specifying whether the provided by \code{resp} are to be
+\item{placAdj}{Logical specifying whether the provided by `resp` are to be
 treated as placebo-adjusted estimates.}
 
 \item{selModel}{
@@ -64,7 +84,7 @@ treated as placebo-adjusted estimates.}
 }
 
 \item{df}{An optional numeric value specifying the degrees of freedom.
-Infinite degrees of freedom (\code{df=Inf}, the default), correspond to the
+Infinite degrees of freedom (`df=Inf`, the default), correspond to the
 multivariate normal distribution.}
 
 \item{critV}{
@@ -75,23 +95,23 @@ multivariate normal distribution.}
 
 \item{doseType}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link{Mods}}), and \samp{Delta} and \samp{p} need to be
+    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.
-    See \code{\link{TD}} and \code{\link{ED}} for details.
+    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
   }
 
 \item{Delta}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link{Mods}}), and \samp{Delta} and \samp{p} need to be
+    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.
-    See \code{\link{TD}} and \code{\link{ED}} for details.
+    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
   }
 
 \item{p}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link{Mods}}), and \samp{Delta} and \samp{p} need to be
+    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.
-    See \code{\link{TD}} and \code{\link{ED}} for details.
+    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
   }
 
 \item{pVal}{
@@ -110,7 +130,7 @@ multivariate normal distribution.}
 
 \item{mvtcontrol}{
   A list specifying additional control parameters for the \samp{qmvt}
-  and \samp{pmvt} calls in the code, see also \code{\link{mvtnorm.control}}
+  and \samp{pmvt} calls in the code, see also \code{\link[DoseFinding]{mvtnorm.control}}
   for details.
 }
 
@@ -118,7 +138,7 @@ multivariate normal distribution.}
   Bounds for non-linear parameters. This needs to be a list with list
   entries corresponding to the selected bounds. The names of the list
   entries need to correspond to the model names. The
-  \code{\link{defBnds}} function provides the default selection.
+  \code{\link[DoseFinding]{defBnds}} function provides the default selection.
 }
 
 \item{control}{
@@ -145,9 +165,9 @@ This is especially useful when a fitting error is returned. In these cases,
 it may be useful to supply a \code{start} vector for the parameters.}
 }
 \value{
-An object of class MCPMod if \code{returnS = FALSE}. Otherwise, a list
-containing an object of class MCPMod, the numeric vector \eqn{\mu}, and the
-numeric matrix \eqn{S}.
+An object of class MCPMod if `returnS = FALSE`. Otherwise, a list
+  containing an object of class MCPMod, the numeric vector \eqn{\mu}, and the
+  numeric matrix \eqn{S}.
 }
 \description{
 This function allows the user to implement the MCPMod function on negative
@@ -178,6 +198,6 @@ MCPModGen("binomial","logit",returnS = TRUE, w = "ntrt", dose = "dose",
 }
 \references{
 Buckland, S. T., Burnham, K. P. and Augustin, N. H. (1997). Model
-selection an integral part of inference, \emph{Biometrics}, \bold{53},
-603--618
+  selection an integral part of inference, \emph{Biometrics}, \bold{53},
+  603--618
 }
