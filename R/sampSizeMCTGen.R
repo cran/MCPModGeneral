@@ -88,7 +88,7 @@ sampSizeMCTGen <- function(family = c("negative binomial", "binomial", "poisson"
                     modelPar = modelPar, theoResp = theoResp, doses = doses, alpha = alpha,
                     family = family, link = link))
     }
-  } else if (class(sumFct) == "function") {
+  } else if (inherits(sumFct, "function")) {
     targFunc <- sumFct
   } else {
     stop("invalid sumFct input")

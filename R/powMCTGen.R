@@ -8,7 +8,7 @@ SCalc <- function(doses, dose.samples, n.doses, family, link, mean.vec, modelPar
 
   if (family == "negative binomial") {
 
-    if (length(offset) != 1 | class(offset) != "numeric") {
+    if (length(offset) != 1 | !inherits(offset, "numeric")) {
       stop("invalid offset")
     }
     if (!(link %in% c("log", "identity", "risk ratio", "sqrt", "log risk ratio"))) {
@@ -269,7 +269,7 @@ SCalc <- function(doses, dose.samples, n.doses, family, link, mean.vec, modelPar
     }
 
   } else if (family == "poisson") {
-    if (length(offset) != 1 | class(offset) != "numeric") {
+    if (length(offset) != 1 | !inherits(offset, "numeric")) {
       stop("invalid offset")
     }
     if (!(link %in% c("log", "identity", "risk ratio", "sqrt", "log risk ratio"))) {
@@ -510,7 +510,7 @@ critVal <- function(corMat, alpha = 0.025, df = NULL,
   }
   qmvtCall <- c(list(1 - alpha, tail = tail, df = df, corr = corMat, algorithm = ctrl,
                      interval = ctrl$interval))
-  do.call("qmvt", qmvtCall)$quantile
+  do.call(mvtnorm::qmvt, qmvtCall)$quantile
 }
 
 
@@ -813,7 +813,7 @@ planModPrepare <- function(nSample, family = c("negative binomial", "binomial", 
     }
     mean.mat <- matrix(theoResp, ncol = 1)
   } else {
-    if (class(models) != "Mods") {
+    if (!inherits(models, "Mods")) {
       stop("models must be of class Mods if provided")
     }
     mean.mat <- getResp(models)

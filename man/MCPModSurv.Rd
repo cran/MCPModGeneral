@@ -89,21 +89,7 @@ multivariate normal distribution.}
   the p-values. If \samp{critV = TRUE} the critical value will be calculated. 
 }
 
-\item{doseType}{
-    \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
-    specified depending on whether TD or ED is to be estimated.
-    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
-  }
-
-\item{Delta}{
-    \samp{doseType} determines the dose to estimate, ED or TD (see also
-    \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
-    specified depending on whether TD or ED is to be estimated.
-    See \code{\link[DoseFinding]{TD}} and \code{\link[DoseFinding]{ED}} for details.
-  }
-
-\item{p}{
+\item{doseType, Delta, p}{
     \samp{doseType} determines the dose to estimate, ED or TD (see also
     \code{\link[DoseFinding]{Mods}}), and \samp{Delta} and \samp{p} need to be
     specified depending on whether TD or ED is to be estimated.

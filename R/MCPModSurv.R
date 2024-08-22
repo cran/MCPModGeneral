@@ -42,19 +42,19 @@ MCPModSurv <- function(model = c("coxph", "parametric"), dist = NULL,
 
   ## Check and format the incoming data.
   if (!is.null(data)) {
-    if (class(data) != "data.frame") {
+    if (!inherits(data, "data.frame")) {
       stop("data must be of class \"data.frame\"")
     }
-    if (class(dose) != "character" | class(resp) != "character" | class(status) !=
-        "character") {
+    if (!inherits(dose, "character") | !inherits(resp, "character") | 
+        !inherits(status, "character")) {
       stop("dose, resp, and status must be of class \"character\" when supplying data")
     }
     dose.vec <- data[, dose]
     resp.vec <- data[, resp]
     status.vec <- data[, status]
   } else {
-    if (class(dose) == "character" | class(resp) == "character" | class(status) ==
-        "character") {
+    if (inherits(dose, "character") | inherits(resp, "character") | 
+        inherits(status, "character")) {
       stop("Must supply data when dose and resp are of class \"character\"")
     }
     if ((length(dose) != length(resp)) | (length(dose) != length(status))) {

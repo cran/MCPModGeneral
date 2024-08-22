@@ -40,16 +40,16 @@ prepareGen <- function(family = c("negative binomial", "binomial", "poisson"),
 
   ## Format user data
   if (!is.null(data)) {
-    if (class(data) != "data.frame") {
+    if (!inherits(data, "data.frame")) {
       stop("data must be of class \"data.frame\"")
     }
-    if (class(dose) != "character" | class(resp) != "character") {
+    if (!inherits(dose, "character") | !inherits(resp, "character")) {
       stop("dose and resp must be character vectors")
     }
     dose.vec <- data[[dose]]
     resp.vec <- data[[resp]]
     if (!is.null(w)) {
-      if (class(w) != "character") {
+      if (!inherits(w, "character")) {
         stop("w must be a character vector")
       }
       w.vec <- data[[w]]
@@ -89,7 +89,7 @@ prepareGen <- function(family = c("negative binomial", "binomial", "poisson"),
 
   if (is.null(offset)) {
     ## Do nothing
-  } else if (!is.null(data) & class(offset) == "character") {
+  } else if (!is.null(data) & inherits(offset, "character")) {
     offset <- data[[offset]]
   } else if (length(offset) != nrow(dat.glm)) {
     stop("offset must be the same length as data")

@@ -27,11 +27,7 @@ in the model.}
 \item{w}{Either a numeric vector of the same length as dose and resp, or a
 character vector denoting the column name in the data.}
 
-\item{dose}{Either vectors of equal length specifying dose and response
-values, or character vectors specifying the names of variables in the data
-frame specified in \code{data}.}
-
-\item{resp}{Either vectors of equal length specifying dose and response
+\item{dose, resp}{Either vectors of equal length specifying dose and response
 values, or character vectors specifying the names of variables in the data
 frame specified in \code{data}.}
 

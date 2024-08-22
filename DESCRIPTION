@@ -1,6 +1,6 @@
 Package: MCPModGeneral
 Title: A Supplement to the 'DoseFinding' Package for the General Case
-Version: 0.1-1
+Version: 0.1-2
 Authors@R: 
     c(person(given = "Ian",
            family = "Laga",
@@ -15,16 +15,15 @@ Description: Analyzes non-normal data via the Multiple Comparison Procedures and
 	Pinheiro, J. C., Bornkamp, B., Glimm, E. and Bretz, F. (2014) <doi:10.1002/sim.6052>.
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 Depends: DoseFinding
-Imports: stats, MASS
-RoxygenNote: 7.0.2
+Imports: stats, MASS, mvtnorm
+RoxygenNote: 7.3.2
 Suggests: testthat (>= 2.1.0), knitr, rmarkdown, survival
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-02-09 21:54:23 UTC; ilaga
+Packaged: 2024-08-22 17:17:28 UTC; q92p873
 Author: Ian Laga [aut, cre],
   Francis Boateng [aut]
 Maintainer: Ian Laga <ilaga25@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-02-19 17:50:04 UTC
+Date/Publication: 2024-08-22 21:20:08 UTC

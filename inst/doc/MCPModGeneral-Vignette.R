@@ -1,14 +1,14 @@
-## ---- include = FALSE----------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----setup, include = FALSE, fig.width = 3, fig.height = 3---------------
+## ----setup, include = FALSE, fig.width = 3, fig.height = 3--------------------
 library(DoseFinding)
 library(MCPModGeneral)
 
-## ----powMCTGen, fig.height=3, fig.width=5--------------------------------
+## ----powMCTGen, fig.height=3, fig.width=5-------------------------------------
 dose.vec = c(0, 5, 10, 20, 30, 40)
 models.full = Mods(doses = dose.vec, linear = NULL,
                    sigEmax = rbind(c(9, 4), c(20, 3)), 
@@ -16,35 +16,35 @@ models.full = Mods(doses = dose.vec, linear = NULL,
                    placEff = 0, maxEff = 2)
 plot(models.full)
 
-## ----powMCTGen2, include = TRUE------------------------------------------
+## ----powMCTGen2, include = TRUE-----------------------------------------------
 ## Look at the power for each possible DR-curve
 powMCTGen(30, "negative binomial", "log", modelPar = 0.1,
           Ntype = "arm", alpha = 0.05, altModels = models.full, verbose = T)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  powMCTGen(180, "negative binomial", "log", modelPar = 0.1,
 #            Ntype = "total", alpha = 0.05, altModels = models.full, verbose = T)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  powMCTGen(c(30,30,30,30,30,30), "negative binomial", "log", modelPar = 0.1,
 #            Ntype = "actual", alpha = 0.05, altModels = models.full, verbose = T)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  powMCTGen(30, "binomial", "probit",
 #            Ntype = "arm", alpha = 0.05, altModels = models.full)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 powMCTGen(30, "binomial", "probit",
           Ntype = "arm", alpha = 0.05, doses = c(0, 1, 2, 36, 38, 40),
           altModels = models.full, verbose = TRUE)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 ## Now consider power at some theoretical DR-values
 powMCTGen(30, "negative binomial", "log", modelPar = 0.1,
           theoResp = c(0, 0.2, 1.8), doses = c(0, 20, 40),
           alpha = 0.05, altModels = models.full)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 ## Can also check type-1 error
 powMCTGen(30, "negative binomial", "log", modelPar = 0.01, theoResp = rep(0, 5),
           doses = c(0, 50, 10, 20, 30),
@@ -52,23 +52,23 @@ powMCTGen(30, "negative binomial", "log", modelPar = 0.01, theoResp = rep(0, 5),
 
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sampSizeMCTGen("binomial", "logit", upperN = 50, Ntype = "arm",
                altModels = models.full, alpha = 0.05, alRatio = c(3/2, 1/2, 1, 1, 1, 1),
                sumFct = "min", power = 0.8)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sampSizeMCTGen("negative binomial", "log", modelPar = 0.1, upperN = 50, Ntype = "arm",
                altModels = models.full, alpha = 0.05,
                sumFct = "max", power = 0.8, verbose = T)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sampSizeMCTGen("negative binomial", "log", modelPar = 0.1, upperN = 100, Ntype = "total",
                alRatio = c(3/2, 1/2, 1),
                theoResp = c(0, 0.2, 1.8), doses = c(0, 20, 40),
                altModels = models.full, alpha = 0.05)
 
-## ----fig.height=3, fig.width=5-------------------------------------------
+## ----fig.height=3, fig.width=5------------------------------------------------
 data(migraine)
 migraine$pfrat = migraine$painfree / migraine$ntrt
 migraine
@@ -76,7 +76,7 @@ migraine
 models = Mods(linear = NULL, emax = 10, quadratic = c(-0.004), doses = migraine$dose)
 plot(models)
 
-## ----fig.height=3, fig.width=5-------------------------------------------
+## ----fig.height=3, fig.width=5------------------------------------------------
 mu.S = prepareGen(family = "binomial", link = "logit", w = "ntrt", dose = "dose",
                   resp = "pfrat", data = migraine)
 mcp.hand = MCPMod(dose = mu.S$data$dose, resp = mu.S$data$resp, models = models,
@@ -84,13 +84,13 @@ mcp.hand = MCPMod(dose = mu.S$data$dose, resp = mu.S$data$resp, models = models,
 plot(mcp.hand)
 mcp.hand
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 mcp.gen = MCPModGen("binomial", "logit", returnS = F, w = "ntrt", dose = "dose",
             resp = "pfrat", data = migraine, models = models, Delta = 0.2)
 mcp.gen
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 ## Simulate some negative binomial data according to one of the models
 set.seed(188)
 mean.vec = getResp(models)[,2]
@@ -106,7 +106,7 @@ for(i in 1:length(migraine$dose)){
 nb.dat = data.frame(dose = dose.dat, resp = resp.dat, gender = gender.dat)
 nb.dat[sample(1:nrow(nb.dat), 5),]
 
-## ----fig.height=3, fig.width=5-------------------------------------------
+## ----fig.height=3, fig.width=5------------------------------------------------
 mcp.nb1 = MCPModGen("negative binomial", link = "log", returnS = T,
           dose = "dose", resp = "resp", data = nb.dat, models = models, Delta = 0.6)
 
@@ -129,7 +129,7 @@ mcp.nb4$MCPMod$doseEst
 plot(mcp.nb1$MCPMod)
 plot(mcp.nb4$MCPMod)
 
-## ----fig.height=3, fig.width=5-------------------------------------------
+## ----fig.height=3, fig.width=5------------------------------------------------
 mcp.covars = MCPModGen("negative binomial", link = "log", returnS = F, addCovars = ~ factor(gender),
                     dose = "dose", resp = "resp", data = nb.dat, models = models, Delta = 0.6)
 
@@ -138,7 +138,7 @@ plot(mcp.covars)
 
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 TD(models, Delta = 0.6)[2]
 
 mcp.nb1$MCPMod$doseEst[mcp.nb1$MCPMod$selMod]
@@ -146,7 +146,7 @@ mcp.covars$doseEst[mcp.covars$selMod]
 
 
 
-## ----fig.height=3, fig.width=5-------------------------------------------
+## ----fig.height=3, fig.width=5------------------------------------------------
 set.seed(1786)
 doses = c(0, 0.1, 0.5, 0.75, 1)
 n.vec = c(30, 20, 23, 19, 32)
