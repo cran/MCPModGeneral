@@ -5,7 +5,7 @@ date: "22 August, 2019"
 output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{MCPModGeneral-Vignette}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -479,7 +479,7 @@ powCalc <- function(alternative, critV, df, corMat, deltaMat, control) {
   for (i in 1:nScen) {
     pmvtCall <- c(list(lower, upper, df = df, corr = corMat,
                        delta = deltaMat[,i], algorithm = ctrl))
-    res[i] <- as.vector(1 - do.call("pmvt", pmvtCall))
+    res[i] <- as.vector(1 - do.call(mvtnorm::pmvt, pmvtCall))
   }
   names(res) <- colnames(deltaMat)
   res

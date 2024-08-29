@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>MCPModGeneral Vignette</title>
+<style type="text/css">
+/**
+ * Prism.s theme ported from highlight.js's xcode style
+ */
+pre code {
+  padding: 1em;
+}
+.token.comment {
+  color: #007400;
+}
+.token.punctuation {
+  color: #999;
+}
+.token.tag,
+.token.selector {
+  color: #aa0d91;
+}
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #1c00cf;
+}
+.token.property,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #c41a16;
+}
+.token.inserted {
+  background-color: #ccffd8;
+}
+.token.deleted {
+  background-color: #ffebe9;
+}
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #9a6e3a;
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #836c28;
+}
+.token.function,
+.token.class-name {
+  color: #DD4A68;
+}
+.token.regex,
+.token.important,
+.token.variable {
+  color: #5c2699;
+}
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+</style>
+<style type="text/css">
+body {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+body, .footnotes, code { font-size: .9em; }
+li li { font-size: .95em; }
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+pre, img { max-width: 100%; }
+pre, pre:hover {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+pre code {
+  display: block;
+  overflow-x: auto;
+}
+code { font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace; }
+:not(pre) > code, code[class] { background-color: #F8F8F8; }
+code.language-undefined, pre > code:not([class]) {
+  background-color: inherit;
+  border: 1px solid #eee;
+}
+table {
+  margin: auto;
+  border-top: 1px solid #666;
+}
+table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+thead, tfoot, tr:nth-child(even) { background: #eee; }
+blockquote {
+  color: #666;
+  margin: 0;
+  padding-left: 1em;
+  border-left: 0.5em solid #eee;
+}
+hr, .footnotes::before { border: 1px dashed #ddd; }
+.frontmatter { text-align: center; }
+#TOC .numbered li { list-style: none; }
+#TOC .numbered { padding-left: 0; }
+#TOC .numbered ul { padding-left: 1em; }
+table, .body h2 { border-bottom: 1px solid #666; }
+.body .appendix, .appendix ~ h2 { border-bottom-style: dashed; }
+.footnote-ref a::before { content: "["; }
+.footnote-ref a::after { content: "]"; }
+section.footnotes::before {
+  content: "";
+  display: block;
+  max-width: 20em;
+}
+
+@media print {
+  body {
+    font-size: 12pt;
+    max-width: 100%;
+  }
+  tr, img { page-break-inside: avoid; }
+}
+@media only screen and (min-width: 992px) {
+  pre { white-space: pre; }
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+</head>
+<body>
+<div class="frontmatter">
+<div class="title"><h1>MCPModGeneral Vignette</h1></div>
+<div class="author"><h2>Ian Laga</h2></div>
+<div class="date"><h3>22 August, 2019</h3></div>
+</div>
+<div class="body">
+<ol>
+<li>Introduction</li>
+<li>Exploratory Stage
+<ul>
+<li><code>powMCTGen</code></li>
+<li><code>sampleSizeMCTGen</code></li>
+</ul>
+</li>
+<li>Data Analysis Stage
+<ul>
+<li>Do things by hand using <code>prepareGen</code> and the <code>DoseFinding</code> package</li>
+<li>Do everything all at once using <code>MCPModGen</code></li>
+</ul>
+</li>
+</ol>
+<h1 id="1-introduction">1 Introduction</h1>
+<p><code>MCPModGeneral</code> is an extension of the <code>DoseFinding</code> package, streamlining the analysis of non-normal endpoints. Almost all of the functions in the <code>DoseFinding</code> package rely on the user supplying \(\mu\), the estimated dose-response coefficients, and \(S\), the variance-covariance matrix of \(\mu\). However, \(S\) is difficult to know before-hand, and for functions like <code>powMCT</code>, differ for each alternative model. The <code>MCPModGeneral</code> package does not require the user to supply a matrix for \(S\) and instead calculates the theoretical variance-covariance matrix for the negative binomial, binomial, and Poisson distributions. Alternatively, the emperical covariance matrices can be estimated via simulation.</p>
+<p>Users can also use the <code>MCPModGeneral</code> package to fit the full MCPMod procedure on negative binomial, Poisson, and binomial data, as well as basic survival data. The relevant functions for fitting the models are <code>prepareGen</code> and <code>MCPModGen</code>. The full capabilities of these functions will be explored later in the vignette.</p>
+<p>As with the <code>DoseFinding</code> package, the <code>MCPModGeneral</code> package still requires the user to create and specify the potential dose-response curves. The <code>DoseFinding</code> package provides the <code>guesst</code> and <code>Mods</code> functions to create these models, but ultimately, the dose-response curves come from prior knowledge or discussion with clinicians. For the entirety of this vignette, it is assumed that the user is able to construct the potential models. Recall that dose-response curves must be constructed on the same scale as the ANOVA output, meaning if negative binomial data is to be analyzed via a GLM with a log-link, the dose-response curve should represent the log of the means at each dose. The <code>MCPModGeneral</code> package allows usage with the most commonly used links. See the <code>family</code> page from the <code>stats</code> package for a list of the common links.</p>
+<h1 id="2-exploratory-stage">2 Exploratory Stage</h1>
+<p>Before collecting data, it is useful to understand the properties of the potential data set. The two relevant functions in the <code>MCPModGeneral</code> package are <code>powMCTGen</code> and <code>sampSizeMCTGen</code>. <code>powMCTGen</code> will calculate the power of the multiple contrast test for the patient allocation and dose-response curves provided. These are extensions of the <code>powMCT</code> and <code>sampSizeMCT</code> packages from the <code>DoseFinding</code> package. While the <code>DoseFinding</code> functions can handle non-normal data, they require a user-provided covariance matrix. We find this unneccesarily prohibative in common use since the covariance function is unlikely to be known in advance. Furthermore, only a single covariance matrix may be supplied, while the covariance matrix for non-normal data typically depends on the expected value at the doses. The <code>MCPModGeneral</code> functions work by calculating the theoretical covariance matrices from the means of the supplied models and then calling the <code>DoseFinding</code> functions. All theoretical covariance matrices were derived by hand for the most common links.</p>
+<h2 id="2-1-power-calculation">2.1 Power Calculation</h2>
+<p>The original <code>powMCT</code> function calculates the power for a multiple contrast test under each alternative model. As discussed above, the <code>powMCTGen</code> function works by calculating the theoretical covariance matrix at each of the alternative models and then calling <code>powMCTGen</code>. We added two new capabilities to the <code>powMCTGen</code> function. First, the user can change the doses in the function instead of having to redefine a new <code>Mods</code> object with the new doses. Second, the user can supply theoretical responses. Note that only one power calculation will be provided in this case, since the responses are no longer assumed to come from each of the models. Now, let us create the set of candidate models we will use for the following examples. We include 5 candidate models in our study, shown below.</p>
+<pre><code class="language-r">dose.vec = c(0, 5, 10, 20, 30, 40)
+models.full = Mods(doses = dose.vec, linear = NULL,
+                   sigEmax = rbind(c(9, 4), c(20, 3)), 
+                   emax = 1.25, quadratic = -0.044/2.667,
+                   placEff = 0, maxEff = 2)
+plot(models.full)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk powMCTGen" /></p>
+<p>The above plot shows the potential dose-response curves on the link-scale (e.g. on the log-scale for negative binomial data). The doses considered are \((0,5,10,20,30,40)\). Now consider a trial where 30 patients receive each dose. We wish to calculate the probability of accepting at least one alternative model given the true underlying dose-response curve. We first assume that the endpoints are negative binomial counts and the dispersion parameter is 0.1. The following chunks of code demonstrate three ways to calculate these powers. The “verbose” parameter specifies whether the assumed patient allocation should be printed. This is useful to ensure that the patient allocation is what was intended.</p>
+<p>We demonstrate the use of <code>powMCTGen</code> below.</p>
+<h3 id="using-the-arm-ntype">Using the “arm” Ntype</h3>
+<pre><code class="language-r">## Look at the power for each possible DR-curve
+powMCTGen(30, &quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.1,
+          Ntype = &quot;arm&quot;, alpha = 0.05, altModels = models.full, verbose = T)
+#&gt; [1] &quot;the patient allocation is given by:&quot;
+#&gt;   Dose nPatients
+#&gt; 1    0        30
+#&gt; 2    5        30
+#&gt; 3   10        30
+#&gt; 4   20        30
+#&gt; 5   30        30
+#&gt; 6   40        30
+#&gt;    linear  sigEmax1  sigEmax2      emax quadratic 
+#&gt; 0.8646814 0.9520107 0.9345375 0.8472385 0.8857200
+</code></pre>
+<h3 id="using-the-total-ntype">Using the “total” Ntype</h3>
+<pre><code class="language-r">powMCTGen(180, &quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.1,
+          Ntype = &quot;total&quot;, alpha = 0.05, altModels = models.full, verbose = T)
+</code></pre>
+<h3 id="using-the-actual-ntype">Using the “actual” Ntype</h3>
+<pre><code class="language-r">powMCTGen(c(30,30,30,30,30,30), &quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.1,
+          Ntype = &quot;actual&quot;, alpha = 0.05, altModels = models.full, verbose = T)
+</code></pre>
+<p>Now let’s assume our dose-response models define the probability of occurance on the probit scale. We need only to change the <code>family</code> and <code>link</code> arguments, and remove the <code>modelPar</code> argument. Note that the <code>modelPar</code> is simply ignored for <code>family = &quot;binomial&quot;</code>.</p>
+<pre><code class="language-r">powMCTGen(30, &quot;binomial&quot;, &quot;probit&quot;,
+          Ntype = &quot;arm&quot;, alpha = 0.05, altModels = models.full)
+</code></pre>
+<p>By default, the doses are assumed to be the same doses used to construct the alternative models. However, the user now can also supply their own doses to see what effect the choice of doses has on the power. Consider the next example, where the doses are either very small or very large, which no doses in the middle of the dose-range. We see that the power decreases for some models, especially “sigEmax2”. This is because certain choices of doses do a better job of defining the underlying shape of the curves.</p>
+<pre><code class="language-r">powMCTGen(30, &quot;binomial&quot;, &quot;probit&quot;,
+          Ntype = &quot;arm&quot;, alpha = 0.05, doses = c(0, 1, 2, 36, 38, 40),
+          altModels = models.full, verbose = TRUE)
+#&gt; [1] &quot;the patient allocation is given by:&quot;
+#&gt;   Dose nPatients
+#&gt; 1    0        30
+#&gt; 2    1        30
+#&gt; 3    2        30
+#&gt; 4   36        30
+#&gt; 5   38        30
+#&gt; 6   40        30
+#&gt;    linear  sigEmax1  sigEmax2      emax quadratic 
+#&gt; 0.9999939 0.9999951 0.9999960 0.9999172 0.9999864
+</code></pre>
+<p>Another nice extension to the <code>DoseFinding</code> package is the power function can now handle theoretical response values. Instead of supplying a dose-response curve, the user can instead supply theoretical mean values (on the link scale) at respective doses. These doses do not have to be the same as the doses used to construct the alternative models.</p>
+<pre><code class="language-r">## Now consider power at some theoretical DR-values
+powMCTGen(30, &quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.1,
+          theoResp = c(0, 0.2, 1.8), doses = c(0, 20, 40),
+          alpha = 0.05, altModels = models.full)
+#&gt; [1] 0.6433713
+</code></pre>
+<p>This can also be used to test the type-1 error, if needed, although this should always be \(\alpha\).</p>
+<pre><code class="language-r">## Can also check type-1 error
+powMCTGen(30, &quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.01, theoResp = rep(0, 5),
+          doses = c(0, 50, 10, 20, 30),
+          alpha = 0.05, altModels = models.full)
+#&gt; [1] 0.05006267
+</code></pre>
+<h2 id="2-2-sample-size-calculations">2.2 Sample Size Calculations</h2>
+<p>One could keep adjusting the patient allocation in <code>powMCTGen</code> in order to reach some target power, but <code>sampSizeMCTGen</code> offers an automated process. In addition to the family, link, parameters, and models, the user also needs to supply a “guess” of the largest sample size needed to reach a certain power, and the desired power. The following line of code calcualted the optimal sample size for binomial data with more patients allocated in the ratios \(3:1:2:2:2:2\) for the respective doses, in order to reach a minimum power of \(0.8\).</p>
+<pre><code class="language-r">sampSizeMCTGen(&quot;binomial&quot;, &quot;logit&quot;, upperN = 50, Ntype = &quot;arm&quot;,
+               altModels = models.full, alpha = 0.05, alRatio = c(3/2, 1/2, 1, 1, 1, 1),
+               sumFct = &quot;min&quot;, power = 0.8)
+#&gt; Sample size calculation
+#&gt; 
+#&gt; alRatio: 3 1 2 2 2 2 
+#&gt; Total sample size: 84 
+#&gt; Sample size per arm: 21 7 14 14 14 14 
+#&gt; targFunc: 0.8131
+</code></pre>
+<p>If <code>verbose = TRUE</code>, current iteration, N, and power is printed at each step. Let’s pay more attention to the <code>sumFct</code> argument. Recall that <code>powMCTGen</code> returns a vector of powers, one for each alternative model. <code>sumFct</code> converts this vector into a single value. The default is to consider the minimum of the powers, so that in the worst case (the true model is the model which has the lowest power), the power is still above the target. Like <code>sampSizeMCT</code>, default functions are “min”, “mean”, and “max”. However, <code>sumFct</code> can also handle user-supplied functions, as long as the function accepts a patient allocation argument of the <code>Ntype</code> specified, and returns a numeric value.</p>
+<pre><code class="language-r">sampSizeMCTGen(&quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.1, upperN = 50, Ntype = &quot;arm&quot;,
+               altModels = models.full, alpha = 0.05,
+               sumFct = &quot;max&quot;, power = 0.8, verbose = T)
+#&gt; Iter: 1, N = 31, current value = 0.9569
+#&gt; Iter: 2, N = 22, current value = 0.8804
+#&gt; Iter: 3, N = 17, current value = 0.7966
+#&gt; Iter: 4, N = 20, current value = 0.852
+#&gt; Iter: 5, N = 18, current value = 0.8155
+#&gt; Sample size calculation
+#&gt; 
+#&gt; alRatio: 1 1 1 1 1 1 
+#&gt; Total sample size: 108 
+#&gt; Sample size per arm: 18 18 18 18 18 18 
+#&gt; targFunc: 0.8155
+</code></pre>
+<p>Just like <code>powMCTGen</code>, <code>sampSizeMCTGen</code> can also handle theoretical responses at supplied doses.</p>
+<pre><code class="language-r">sampSizeMCTGen(&quot;negative binomial&quot;, &quot;log&quot;, modelPar = 0.1, upperN = 100, Ntype = &quot;total&quot;,
+               alRatio = c(3/2, 1/2, 1),
+               theoResp = c(0, 0.2, 1.8), doses = c(0, 20, 40),
+               altModels = models.full, alpha = 0.05)
+#&gt; Sample size calculation
+#&gt; 
+#&gt; alRatio: 3 1 2 
+#&gt; Total sample size: 114 
+#&gt; Sample size per arm: 57 19 38 
+#&gt; targFunc: 0.8019
+</code></pre>
+<h1 id="3-data-analysis-stage">3 Data Analysis Stage</h1>
+<p>In this section, we will explore the two methods for analyzing non-normal data using the <code>MCPModGeneral</code> package. The first method uses the <code>prepareGen</code> function to retrieve the \(\hat{\mu}\) vector and \(\hat{S}\) matrix, and then passes these objects into <code>DoseFinding</code> functions. The second method combines the two steps into one via the <code>MCPModGen</code> function.</p>
+<h2 id="3-1-binomial-data">3.1 Binomial Data</h2>
+<p>First, consider the data. This data set is provided in the <code>DoseFinding</code> package, and the primary endpoint was the binary value “pain freedom at 2 hours postdose.” We also construct three candidate models for demonstration. These models were not based off any prior knowledge, and serve only as demonstration of the approach.</p>
+<pre><code class="language-r">data(migraine)
+migraine$pfrat = migraine$painfree / migraine$ntrt
+migraine
+#&gt;    dose painfree ntrt      pfrat
+#&gt; 1   0.0       13  133 0.09774436
+#&gt; 2   2.5        4   32 0.12500000
+#&gt; 3   5.0        5   44 0.11363636
+#&gt; 4  10.0       16   63 0.25396825
+#&gt; 5  20.0       12   63 0.19047619
+#&gt; 6  50.0       14   65 0.21538462
+#&gt; 7 100.0       14   59 0.23728814
+#&gt; 8 200.0       21   58 0.36206897
+
+models = Mods(linear = NULL, emax = 10, quadratic = c(-0.004), doses = migraine$dose)
+plot(models)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-11" /></p>
+<p>We can prepare the data manually using the <code>prepareGen</code> function and then forward the output to the <code>MCPMod</code> function from the <code>DoseFinding</code> package. This two step process is shown below.</p>
+<pre><code class="language-r">mu.S = prepareGen(family = &quot;binomial&quot;, link = &quot;logit&quot;, w = &quot;ntrt&quot;, dose = &quot;dose&quot;,
+                  resp = &quot;pfrat&quot;, data = migraine)
+mcp.hand = MCPMod(dose = mu.S$data$dose, resp = mu.S$data$resp, models = models,
+                  S = mu.S$S, Delta = 0.2, type = &quot;general&quot;)
+plot(mcp.hand)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-12" /></p>
+<pre><code class="language-r">mcp.hand
+#&gt; MCPMod
+#&gt; 
+#&gt; Multiple Contrast Test:
+#&gt;           t-Stat   adj-p
+#&gt; emax       4.061 &lt; 0.001
+#&gt; linear     3.703 &lt; 0.001
+#&gt; quadratic  3.079 0.00209
+#&gt; 
+#&gt; Estimated Dose Response Models:
+#&gt; linear model
+#&gt;     e0  delta 
+#&gt; -1.710  0.006 
+#&gt; 
+#&gt; emax model
+#&gt;     e0   eMax   ed50 
+#&gt; -2.219  1.387  8.473 
+#&gt; 
+#&gt; quadratic model
+#&gt;     e0     b1     b2 
+#&gt; -1.776  0.010  0.000 
+#&gt; 
+#&gt; Selected model (AIC): emax
+#&gt; 
+#&gt; Estimated TD, Delta=0.2
+#&gt;    linear      emax quadratic 
+#&gt;   33.8758    1.4274   20.9810
+</code></pre>
+<p>Alternatively, we can perform the same calculations, but in one step via the <code>MCPModGen</code> function.</p>
+<pre><code class="language-r">mcp.gen = MCPModGen(&quot;binomial&quot;, &quot;logit&quot;, returnS = F, w = &quot;ntrt&quot;, dose = &quot;dose&quot;,
+            resp = &quot;pfrat&quot;, data = migraine, models = models, Delta = 0.2)
+mcp.gen
+#&gt; MCPMod
+#&gt; 
+#&gt; Multiple Contrast Test:
+#&gt;           t-Stat   adj-p
+#&gt; emax       4.061 &lt; 0.001
+#&gt; linear     3.703 &lt; 0.001
+#&gt; quadratic  3.079 0.00214
+#&gt; 
+#&gt; Estimated Dose Response Models:
+#&gt; linear model
+#&gt;     e0  delta 
+#&gt; -1.710  0.006 
+#&gt; 
+#&gt; emax model
+#&gt;     e0   eMax   ed50 
+#&gt; -2.219  1.387  8.473 
+#&gt; 
+#&gt; quadratic model
+#&gt;     e0     b1     b2 
+#&gt; -1.776  0.010  0.000 
+#&gt; 
+#&gt; Selected model (AIC): emax
+#&gt; 
+#&gt; Estimated TD, Delta=0.2
+#&gt;    linear      emax quadratic 
+#&gt;   33.8758    1.4274   20.9810
+</code></pre>
+<p>Notice that the results for the two methods are almost identical. Slightly different values are given (e.g. the adj-p values), but this is due to the computation method.</p>
+<h2 id="3-2-negative-binomial-data">3.2 Negative Binomial Data</h2>
+<p>The <code>DoseFinding</code> package does not have any negative binomial data, so we will simulate data according to the same model curves we used for the binomial data. Five random observations are shown from the data set to demonstrate the structure of the data. To demonstrate the affect that additional covariates has on the model, we will use extremely large sample sizes for each arm (300 patients per arm) and a very large gender effect.</p>
+<pre><code class="language-r">## Simulate some negative binomial data according to one of the models
+set.seed(188)
+mean.vec = getResp(models)[,2]
+dose.dat = c()
+resp.dat = c()
+gender.dat = c()
+for(i in 1:length(migraine$dose)){
+  gender.tmp = rbinom(300, 1, prob = 0.3)
+  gender.dat = c(gender.dat, gender.tmp)
+  dose.dat = c(dose.dat, rep(migraine$dose[i], 300))
+  resp.dat = c(resp.dat, rnbinom(300, mu = exp(mean.vec[i] + 5*gender.tmp), size = 1))
+}
+nb.dat = data.frame(dose = dose.dat, resp = resp.dat, gender = gender.dat)
+nb.dat[sample(1:nrow(nb.dat), 5),]
+#&gt;       dose resp gender
+#&gt; 876    5.0   24      1
+#&gt; 398    2.5    1      0
+#&gt; 2281 200.0    3      0
+#&gt; 1780  50.0    9      0
+#&gt; 2126 200.0  453      1
+</code></pre>
+<p>Now we will perform the MCP-Mod procedure on the negative binomial data, both using the default approach, and also on the placebo adjusted data. Note that we also show the different ways to supply the <code>dose</code> and <code>resp</code> arguments, which differ slightly from the <code>DoseFinding</code> package which does not use character vectors. We show only the results for two of the objects (one default, one placebo adjusted). Note that if <code>returnS</code> is TRUE, the returned object will have three arguments. One with the MCPMod object, one with \(\hat{\mu}\) and the doses, and one with \(\hat{S}\).</p>
+<pre><code class="language-r">mcp.nb1 = MCPModGen(&quot;negative binomial&quot;, link = &quot;log&quot;, returnS = T,
+          dose = &quot;dose&quot;, resp = &quot;resp&quot;, data = nb.dat, models = models, Delta = 0.6)
+
+mcp.nb2 = MCPModGen(&quot;negative binomial&quot;, link = &quot;log&quot;, returnS = T,
+          dose = dose.dat, resp = resp.dat, models = models, Delta = 0.6)
+
+mcp.nb3 = MCPModGen(&quot;negative binomial&quot;, link = &quot;log&quot;, returnS = T, placAdj = T,
+          dose = &quot;dose&quot;, resp = &quot;resp&quot;, data = nb.dat, models = models, Delta = 0.6)
+
+mcp.nb4 = MCPModGen(&quot;negative binomial&quot;, link = &quot;log&quot;, returnS = T, placAdj = T,
+          dose = dose.dat, resp = resp.dat, models = models, Delta = 0.6)
+
+names(mcp.nb1)
+#&gt; [1] &quot;MCPMod&quot; &quot;data&quot;   &quot;S&quot;
+mcp.nb1$data
+#&gt;    dose     resp
+#&gt; 1   0.0 3.975311
+#&gt; 2   2.5 4.037421
+#&gt; 3   5.0 3.969348
+#&gt; 4  10.0 4.156954
+#&gt; 5  20.0 4.558707
+#&gt; 6  50.0 4.435765
+#&gt; 7 100.0 4.774885
+#&gt; 8 200.0 4.908036
+
+
+mcp.nb1$MCPMod$doseEst
+#&gt;    linear      emax quadratic 
+#&gt; 130.84452  41.37549  67.10633 
+#&gt; attr(,&quot;addPar&quot;)
+#&gt; [1] 0.6
+mcp.nb4$MCPMod$doseEst
+#&gt;    linear      emax quadratic 
+#&gt; 130.84452  41.37549  67.10633 
+#&gt; attr(,&quot;addPar&quot;)
+#&gt; [1] 0.6
+
+plot(mcp.nb1$MCPMod)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-15" /></p>
+<pre><code class="language-r">plot(mcp.nb4$MCPMod)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-15" /></p>
+<h2 id="additional-covariates">Additional Covariates</h2>
+<p>The <code>MCPModGeneral</code> function can also incorporate additional covariates. Consider the same constructed negative binomial data from above. Notice how we removed the effect of <code>gender</code> on the results. We will now easily consider the <code>gender</code> of the patients using the <code>addCovars</code> parameter. Notice how <code>gender</code> is a categorical variable, so when we provide the formula in the <code>addCovars</code> argument, we need to specify that we want to treat it as a factor. If <code>gender</code> is already a factor in the data frame, then the model will still treat it as a factor.</p>
+<pre><code class="language-r">mcp.covars = MCPModGen(&quot;negative binomial&quot;, link = &quot;log&quot;, returnS = F, addCovars = ~ factor(gender),
+                    dose = &quot;dose&quot;, resp = &quot;resp&quot;, data = nb.dat, models = models, Delta = 0.6)
+
+mcp.covars
+#&gt; MCPMod
+#&gt; 
+#&gt; Multiple Contrast Test:
+#&gt;           t-Stat  adj-p
+#&gt; emax      15.509 &lt;0.001
+#&gt; quadratic 14.384 &lt;0.001
+#&gt; linear    12.122 &lt;0.001
+#&gt; 
+#&gt; Estimated Dose Response Models:
+#&gt; linear model
+#&gt;    e0 delta 
+#&gt; 0.313 0.004 
+#&gt; 
+#&gt; emax model
+#&gt;     e0   eMax   ed50 
+#&gt; -0.082  1.152 14.330 
+#&gt; 
+#&gt; quadratic model
+#&gt;    e0    b1    b2 
+#&gt; 0.143 0.015 0.000 
+#&gt; 
+#&gt; Selected model (AIC): emax
+#&gt; 
+#&gt; Estimated TD, Delta=0.6
+#&gt;    linear      emax quadratic 
+#&gt;  139.1470   15.5723   49.2665
+plot(mcp.covars)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-16" /></p>
+<p>Let’s now see the target dose estimates for our models against the true target dose.</p>
+<pre><code class="language-r">TD(models, Delta = 0.6)[2]
+#&gt;     emax 
+#&gt; 13.33333
+
+mcp.nb1$MCPMod$doseEst[mcp.nb1$MCPMod$selMod]
+#&gt;     emax 
+#&gt; 41.37549
+mcp.covars$doseEst[mcp.covars$selMod]
+#&gt;     emax 
+#&gt; 15.57235
+</code></pre>
+<p>We can clearly see that including the covariates greatly improves the accuracy of the TD estimate.</p>
+<h1 id="relative-risk">Relative Risk</h1>
+<p>The relative risk measures either the risk ratio for binomial data or the rate ratio for count data. The main advantage of using the relative risk is that interpretation is incredibly easy and consistent under different data distributions. While the canonical link for negative binomial data is the log-link, it is often difficult to propose candidate models in terms of log-mean. Other links are even more confusing.</p>
+<p>For binary data, the relative risk is better known as the risk ratio, where the relative risk for dose \(a\) against the placebo \(p\) is given by
+\begin{equation} RR_a = \frac{\left(\sum_{i = 1}^{n_a} I(outcome)_{a,i}\right)/n_a}{\left(\sum_{i = 1}^{n_p} I(outcome)_{p,i}\right)/n_p} \end{equation}
+where \(n_a\) denotes the number of patients who received dose \(a\).</p>
+<p>For count data (e.g. negative binomial and Poisson), the relative risk is better known as the rate ratio, where the relative risk for dose \(a\) against the placebo \(p\) is given by
+\begin{equation} RR_a = \frac{\left(\sum_{i = 1}^{n_a} \#events_{a,i}\right)/\left(\sum_{i = 1}^{n_a} time_{a,i} \right)}{\left(\sum_{i = 1}^{n_p} \#events_{p,i}\right)/\left(\sum_{i = 1}^{n_p} time_{p,i} \right)} \end{equation}
+where \(\#events_{a,i}\) denotes the number events that occurred for patient \(i\) of dose \(a\) in the recording time \(time_{a,i}\).</p>
+<p>Users can specify candidate models on the relative risk scale and apply the traditional MCP-Mod procedure via the <code>MCPModGeneral</code> package. For power analysis, the user must also supply the mean at the placebo, denoted <code>placEff</code>. An example of data generated from a candidate relative risk dose-response curve and analysis of the data is shown in the following chunk of code.</p>
+<pre><code class="language-r">set.seed(1786)
+doses = c(0, 0.1, 0.5, 0.75, 1)
+n.vec = c(30, 20, 23, 19, 32)
+n.doses = length(doses)
+models = Mods(doses = doses, linear = NULL, emax = 0.1, exponential = 0.2,
+              quadratic = -0.75, placEff = 1, maxEff = -0.3)
+
+## Perform power-analysis
+powMCTGen(n.vec, &quot;binomial&quot;, &quot;risk ratio&quot;, altModels = models, placEff = 0.9,
+          Ntype = &quot;actual&quot;)
+#&gt; using 'placAdj' specification from contMat object
+#&gt; using 'placAdj' specification from contMat object
+#&gt; using 'placAdj' specification from contMat object
+#&gt; using 'placAdj' specification from contMat object
+#&gt;      linear        emax exponential   quadratic 
+#&gt;   0.8987091   0.9597508   0.8011131   0.9106507
+
+
+
+
+## Simulate the data according to the exponential curve
+means = getResp(models)[,3]*0.9
+cbind(Dose = doses, Means = means)
+#&gt;      Dose     Means
+#&gt; 0    0.00 0.9000000
+#&gt; 0.1  0.10 0.8988118
+#&gt; 0.5  0.50 0.8795183
+#&gt; 0.75 0.75 0.8239505
+#&gt; 1    1.00 0.6300000
+
+resp.dat = c()
+for(i in 1:n.doses){
+  resp.dat = c(resp.dat, rbinom(1, size = n.vec[i], prob = means[i]))
+}
+
+bin.dat = data.frame(dose = doses, resp = resp.dat/n.vec, w = n.vec)
+
+
+
+
+## Fit using the package
+
+mod.pack = MCPModGen(&quot;binomial&quot;, &quot;risk ratio&quot;, returnS = F, w = &quot;w&quot;, dose = &quot;dose&quot;, resp = &quot;resp&quot;,
+                     data = bin.dat, models = models, Delta = 0.1)
+#&gt; Forcing 'placAdj = TRUE' for risk ratio links
+
+plot(mod.pack)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-18" /></p>
+<pre><code class="language-r">## Look at the MED estimate
+mod.pack$doseEst[mod.pack$selMod]
+#&gt; exponential 
+#&gt;   0.7955145
+TD(models, Delta = 0.1, direction = &quot;decreasing&quot;)[3]
+#&gt; exponential 
+#&gt;   0.7829547
+</code></pre>
+<h1 id="conclusion">Conclusion</h1>
+<p>The <code>MCPModGeneral</code> package allows users to use the methods from the <code>DoseFinding</code> package without having to code additional data analysis. While fitting the actual MCP-Mod procedure for non-normal data is often very straightforward, full power-analysis requires extensive coding, which the <code>MCPModGeneral</code> package does for the user. The other significant contribution to the <code>DoseFinding</code> package is the inclusion of the relative risk link. Together, the <code>MCPModGeneral</code> package and <code>DoseFinding</code> package can apply the MCP-Mod procedure to the most common data distributions.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js" defer></script>
+</body>
+</html>
